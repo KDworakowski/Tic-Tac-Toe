@@ -1,15 +1,62 @@
-from typing import Optional
 from random import randint
 
+
 class Logic():
-    class Game():
+
+    class PawnFactory():
+        def __init__(self, player_id: int) -> None:
+            self.player_id = player_id
+
+        player_id: int
+
+        def create(self):
+            return Logic.Pawn(self.player_id)
+
+    class Pawn():
+        def __init__(self, player_id: int) -> None:
+            self.player_id = player_id
+
+            player_id: int
+    class Player():
         """
-        For the purpouse of this project we assume that
-        player1 has ID:1, and player2 has ID:2.
+        Pawn factory is being created
         """
+        def __init__(self, id: int) -> None:
+            self.id = id
+            self.pawner = Logic.PawnFactory(self.id)
+
         id: int
-        player1: Optional[str]
-        player2: Optional[str]
+        nickname: str
+        pawner = 0
+
+    class DashBoard():
+        players = []
+
+        def add_player(self, player):
+            self.players.append(player)
+
+        """
+        Players turns being randomized
+        """
+        def turn_randomize():
+            pass
+
+        """
+        Next player is being chosen
+        """
+        def choose_next_player():
+            pass
+
+        """
+        Show results
+        """
+        def results():
+            pass
+
+    class Board():
+        pass
+
+    class Game():
 
         """
         Board is being created
@@ -24,13 +71,8 @@ class Logic():
         player_win: int
         finished = False
 
-        def __init__(self, id: str, player1: str, player2: str) -> None:
+        def __init__(self, id: int) -> None:
             self.id = id
-            self.player1 = player1
-            self.player2 = player2
-            self.player_turn = 0
-            self.player_win = 0
-            self.score_board = {self.player1: 0, self.player2: 0}
             self.board = [
                 [0, 0, 0],
                 [0, 0, 0],
@@ -52,12 +94,6 @@ class Logic():
 
     def __init__(self) -> None:
         self.game = False
-
-    """
-    Player turn being randomized
-    """
-    def draw_player_turn(self) -> None:
-        self.game.player_turn = randint(1,2)
 
     """
     Player is being created
@@ -91,11 +127,22 @@ class Logic():
 
         """
         Accept the chose of player
+
+        Player is creating a pawn
+
+        Player is placing a pawn in the selected place on the board
         """
         self.game.board[coordinate[0]][coordinate[1]] = player_id
 
         """
         Check if player won by comparing board with winning combinations
+
+        Logic is setting basic result as 0 and counting all fields in the list.
+
+        For example, if player with ID:1 placed his moves in one of the winning combinations,
+        the logic is counting all of his moves inside the winning combinations.
+        If in one of the winning combinations player moves equals 3 (in that case, if the player
+        would have ID:2 then it would need to equal 6) then this player won.
         """
         for x in self.all_possible_winning_combinations:
             if not self.game.finished:
@@ -138,6 +185,9 @@ class Logic():
 
         """
         Swap the players
+
+        After successful move made by a player without win or draw logic swap the player,
+        so another player can make his move.
         """
         if not self.game.finished:
             self.game.player_turn = ((self.game.player_turn + 2) % 2) + 1
