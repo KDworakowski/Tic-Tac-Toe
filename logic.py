@@ -1,5 +1,5 @@
-from random import randint
-
+from array import array
+import random
 
 class Logic():
 
@@ -38,14 +38,15 @@ class Logic():
         """
         Players turns being randomized
         """
-        def turn_randomize():
-            pass
+        def turn_randomize(self, players):
+            self.player_turn = random.choice(players)
 
         """
         Next player is being chosen
         """
-        def choose_next_player():
-            pass
+        def choose_next_player(self):
+            if not self.game.finished:
+                self.game.player_turn = ((self.game.player_turn + 2) % 2) + 1
 
         """
         Show results
@@ -61,23 +62,27 @@ class Logic():
         """
         Board is being created
         """
-        board = [
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 0, 0]
-        ]
+        def board(self):
+            board = []
+            board_size = 5
+            check_if_int = isinstance(board_size, int)
+            if check_if_int != True:
+                print("Board size must be an integer")
+            elif board_size <= 2:
+                print("Board size is minimum 3")
+            elif board_size == 3 or board_size >= 3:
+                for r in range(0, board_size):
+                    board.append([0 for c in range(0, board_size)])
+                # print(board)
+                return board
 
         player_turn: int
         player_win: int
         finished = False
 
-        def __init__(self, id: int) -> None:
+        def __init__(self, id: int, board: array) -> None:
             self.id = id
-            self.board = [
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0]
-            ]
+            self.board = board
 
     all_possible_winning_combinations = [
         [[0,0], [0,1], [0,2]],
