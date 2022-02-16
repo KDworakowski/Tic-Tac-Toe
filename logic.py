@@ -59,18 +59,34 @@ class Logic():
 
     class Game():
 
-        """
-        Board is being created
-        """
         def board(self):
+            """
+            Board is being created
+            """
             board = []
+
+            """
+            Set the board size
+            """
             board_size = 5
             check_if_int = isinstance(board_size, int)
+
+            """
+            Check if the board size is an integer
+
+            Check if the board size is not smaller than 3
+
+            Check if the board size equals 3 or is bigger than 3
+            """
             if check_if_int != True:
                 print("Board size must be an integer")
+
             elif board_size <= 2:
                 print("Board size is minimum 3")
             elif board_size == 3 or board_size >= 3:
+                """
+                Create board with selected size
+                """
                 for r in range(0, board_size):
                     board.append([0 for c in range(0, board_size)])
                 # print(board)
