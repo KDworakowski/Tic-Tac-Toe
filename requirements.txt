@@ -1,2 +1,5 @@
 typing
 pytest
+pytest-repeat
+pytest-cov
+numpy
