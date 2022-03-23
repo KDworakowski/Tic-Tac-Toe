@@ -145,10 +145,18 @@ class Logic():
         player_win: int
         finished = False
 
+        error_codes = {
+        "GAME_FINISHED": 100,
+        "PLAYER_TURN_MISMATCH": 101,
+        "PLACE_ON_BOARD_ALREADY_TAKEN": 102,
+        }
+
         def __init__(self, id: int = 1) -> None:
             self.id = id
             self.board = Logic.Board()
             self.dashboard = Logic.DashBoard()
+            self.players = Logic.DashBoard.players
+            self.player_turn = Logic.DashBoard.player_turn
 
         def move(self, player: Logic.Player, coordinate: list) -> int:
             """
@@ -177,7 +185,7 @@ class Logic():
             Player is placing a pawn in the selected place on the board
             """
 
-            self.board.board[coordinate[0]][coordinate[1]] = player.pawner.create()
+            x = self.board.board[coordinate[0]][coordinate[1]] = player.pawner.create()
 
             """
             Check if player won by comparing board with winning combinations

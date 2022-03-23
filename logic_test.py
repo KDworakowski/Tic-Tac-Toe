@@ -86,10 +86,95 @@ def test_game():
     game = Logic.Game()
     game.dashboard.add_player(Logic.Player(1))
     game.dashboard.add_player(Logic.Player(2))
-    game.dashboard.turn_randomize()
+    game.dashboard.player_turn = 1
+
     game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,1])
-    # wylosowany gracz stawia pionek w polu [0,1]
     assert game.board.board[0][1].player_id == game.dashboard.player_turn
+
     game.dashboard.players.clear()
 
-def test_game_move_finished():
+def test_game_move_game_finished():
+    game = Logic.Game()
+    game.dashboard.add_player(Logic.Player(1))
+    game.dashboard.add_player(Logic.Player(2))
+    game.dashboard.player_turn = 1
+
+    game.finished = True
+    assert game.finished == True
+
+    move = game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,1])
+    assert game.board.board[0][1] == 0
+    # error code: "GAME_FINISHED": 100
+    assert move == 100
+
+    game.dashboard.players.clear()
+
+def test_game_move_player_turn_mismatch():
+    game = Logic.Game()
+    game.dashboard.add_player(Logic.Player(1))
+    game.dashboard.add_player(Logic.Player(2))
+    game.dashboard.player_turn = 1
+
+    move = game.move(player = game.dashboard.players[game.dashboard.player_turn-2], coordinate=[0,1])
+    assert game.board.board[0][1] == 0
+    # error code: "PLAYER_TURN_MISMATCH": 101
+    assert move == 101
+
+    game.dashboard.players.clear()
+
+def test_game_move_place_on_board_already_taken():
+    game = Logic.Game()
+    game.dashboard.add_player(Logic.Player(1))
+    game.dashboard.add_player(Logic.Player(2))
+    game.dashboard.player_turn = 1
+
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,1])
+    assert game.board.board[0][1].player_id == game.dashboard.player_turn
+
+    game.dashboard.player_turn = 2
+
+    move = game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,1])
+    assert game.board.board[0][1].player_id != game.dashboard.player_turn
+    # error code: "PLACE_ON_BOARD_ALREADY_TAKEN": 102
+    assert move == 102
+
+
+    game.dashboard.players.clear()
+
+def test_game_dynamic_switch_player():
+    game = Logic.Game()
+    game.dashboard.add_player(Logic.Player(1))
+    game.dashboard.add_player(Logic.Player(2))
+    game.dashboard.turn_randomize()
+
+    first_player_turn = game.dashboard.player_turn
+
+    game.dashboard.choose_next_player()
+    index = len(game.dashboard.players)
+    assert game.dashboard.player_turn == (first_player_turn+index)%index+1
+
+    game.dashboard.players.clear()
+
+def test_game_static_switch_player():
+    game = Logic.Game()
+    game.dashboard.add_player(Logic.Player(1))
+    game.dashboard.add_player(Logic.Player(2))
+    game.dashboard.player_turn = 1
+
+    game.dashboard.choose_next_player()
+    assert game.dashboard.player_turn == 2
+
+    game.dashboard.choose_next_player()
+    assert game.dashboard.player_turn == 1
+
+    game.dashboard.players.clear()
+
+def test_check_win():
+    game = Logic.Game()
+    game.dashboard.add_player(Logic.Player(1))
+    game.dashboard.add_player(Logic.Player(2))
+    game.dashboard.player_turn = 1
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,0])
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,1])
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,2])
+    Logic.check_win_or_draw(self)
