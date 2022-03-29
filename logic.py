@@ -228,7 +228,6 @@ class Logic():
             Draw
             """
             if pawn == math.pow(self.board.board_size, 2) and not self.finished:
-                self.dashboard.player_win = 0
                 self.finished = True
 
             """
