@@ -180,6 +180,8 @@ def test_check_win():
     game.check_win_or_draw()
 
     assert game.finished == True
+
+    assert game.dashboard.results() == 1
     game.dashboard.players.clear()
 
 

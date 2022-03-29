@@ -35,7 +35,7 @@ class Logic():
         players = []
 
         player_turn = 0
-
+        player_win = 0
 
         def add_player(self, player: Logic.Player) -> None:
             self.players.append(player)
@@ -56,8 +56,8 @@ class Logic():
         """
         Show results
         """
-        def results():
-            pass
+        def results(self):
+            return self.player_win
 
     class Board():
         def __init__(self, board_size: int = 3):
@@ -212,7 +212,7 @@ class Logic():
                         """
                         Player win
                         """
-                        self.player_win = self.board.board[x[0][0]][x[0][1]].player_id
+                        self.dashboard.player_win = self.board.board[x[0][0]][x[0][1]].player_id
                         self.finished = True
 
             """
@@ -228,6 +228,7 @@ class Logic():
             Draw
             """
             if pawn == math.pow(self.board.board_size, 2) and not self.finished:
+                self.dashboard.player_win = 0
                 self.finished = True
 
             """
