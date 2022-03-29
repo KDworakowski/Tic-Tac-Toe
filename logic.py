@@ -1,6 +1,7 @@
 from __future__ import annotations
 from array import array
 import random
+import math
 class Logic():
 
     class PawnFactory():
@@ -185,7 +186,7 @@ class Logic():
             Player is placing a pawn in the selected place on the board
             """
 
-            x = self.board.board[coordinate[0]][coordinate[1]] = player.pawner.create()
+            self.board.board[coordinate[0]][coordinate[1]] = player.pawner.create()
 
             """
             Check if player won by comparing board with winning combinations
@@ -197,76 +198,42 @@ class Logic():
             If in one of the winning combinations player moves equals 3 (in that case, if the player
             would have ID:2 then it would need to equal 6) then this player won.
             """
+        def check_win_or_draw(self):
+            for x in self.board.all_possible_winning_combinations():
+                if not self.finished:
+                    if ((isinstance(self.board.board[x[0][0]][x[0][1]], Logic.Pawn) and \
+                        isinstance(self.board.board[x[1][0]][x[1][1]], Logic.Pawn) and \
+                        isinstance(self.board.board[x[2][0]][x[2][1]], Logic.Pawn)) and \
+                        (self.board.board[x[0][0]][x[0][1]].player_id == \
+                        self.board.board[x[1][0]][x[1][1]].player_id == \
+                        self.board.board[x[2][0]][x[2][1]].player_id)
+                    ):
+
+                        """
+                        Player win
+                        """
+                        self.player_win = self.board.board[x[0][0]][x[0][1]].player_id
+                        self.finished = True
+
+            """
+            Check if there's a draw by checking that whole board is filled with pawns
+            """
+            pawn = 0
+            for x in range(0,self.board.board_size):
+                for y in range(0,self.board.board_size):
+                    if isinstance(self.board.board[x][y], Logic.Pawn):
+                        pawn += 1
+
+            """
+            Draw
+            """
+            if pawn == math.pow(self.board.board_size, 2) and not self.finished:
+                self.finished = True
+
+            """
+            End of the game
+            """
+            return 0
 
 
 #######################################
-
-    def __init__(self) -> None:
-        self.game = False
-        self.all_possible_winning_combinations = Logic.Board.all_possible_winning_combinations()
-
-    """
-    Player is being created
-    """
-    # def create(self, player1: str = "player1", player2: str = "player2") -> bool:
-    #     self.game = self.Game(player1, player2)
-    #     self.draw_player_turn()
-    #     return True
-
-    """
-    Player is making move
-    """
-    # def move(self, player_id, coordinate: list) -> int:
-    def check_win_or_draw(self):
-        for x in self.all_possible_winning_combinations:
-            if not self.game.finished:
-                result = 0
-                if (self.game.board[x[0][0]][x[0][1]] == \
-                    self.game.board[x[1][0]][x[1][1]] == \
-                    self.game.board[x[2][0]][x[2][1]]
-                ):
-                    result = (
-                        self.game.board[x[0][0]][x[0][1]] + \
-                        self.game.board[x[1][0]][x[1][1]] + \
-                        self.game.board[x[2][0]][x[2][1]]
-                    )
-
-                    """
-                    Player win
-                    """
-                    if result == 3:
-                        self.game.player_win = 1
-                        self.game.finished = True
-
-                    elif result == 6:
-                        self.game.player_win = 2
-                        self.game.finished = True
-
-        """
-        Check if there's a draw by checking that whole board is filled with player moves
-        """
-        zeros = 0
-        for x in range(0,2):
-            for y in range(0,2):
-                if self.game.board[x][y] == 0:
-                    zeros += 1
-
-        """
-        Draw
-        """
-        if zeros == 0 and not self.game.finished:
-            self.game.finished = True
-
-        """
-        Swap the players
-
-        After successful move made by a player without win or draw logic swap the player,
-        so another player can make his move.
-        """
-        if not self.game.finished:
-            self.game.player_turn = ((self.game.player_turn + 2) % 2) + 1
-            # self.game.player_turn = ((1 + 2) % 2) + 1 = 2 | ((2 + 2) % 2) + 1 = 1
-        """
-        End of the game
-        """
-        return 0

@@ -177,4 +177,45 @@ def test_check_win():
     game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,0])
     game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,1])
     game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,2])
-    Logic.check_win_or_draw(self)
+    game.check_win_or_draw()
+
+    assert game.finished == True
+    game.dashboard.players.clear()
+
+
+def test_check_game_not_finished():
+    game = Logic.Game()
+    game.dashboard.add_player(Logic.Player(1))
+    game.dashboard.add_player(Logic.Player(2))
+    game.dashboard.player_turn = 1
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,0])
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,1])
+    game.dashboard.player_turn = 2
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,2])
+    game.check_win_or_draw()
+
+    assert game.finished == False
+    game.dashboard.players.clear()
+
+def test_check_draw():
+    game = Logic.Game()
+    game.dashboard.add_player(Logic.Player(1))
+    game.dashboard.add_player(Logic.Player(2))
+    game.dashboard.player_turn = 1
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,0])
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,2])
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[1,2])
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[2,1])
+
+    game.dashboard.player_turn = 2
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[0,1])
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[1,0])
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[1,1])
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[2,0])
+    game.move(player = game.dashboard.players[game.dashboard.player_turn-1], coordinate=[2,2])
+
+
+    game.check_win_or_draw()
+
+    assert game.finished == True
+    game.dashboard.players.clear()
